@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="loginstyle.css">
+    <style>
+        /* 공지사항 섹션 스타일 */
+        #noticeSection {
+            text-align: center; /* 텍스트 가운데 정렬 */
+            margin-top: 20px;
+        }
+
+        #notices {
+            display: inline-block; /* 콘텐츠 너비만큼만 차지 */
+            text-align: left; /* 공지사항 목록 왼쪽 정렬 */
+        }
+    </style>
+</head>
+<body>
+    <form id="loginForm"> <!-- id 추가 -->
+        <table>
+            <tr>
+                <td><h2>으라차차 농산물 시장</h2></td>
+            </tr>
+            <tr>
+                <td><input type="text" placeholder="학번" name="학번" id="studentId" required></td>
+            </tr>
+            <tr>
+                <td><input type="text" placeholder="이름" name="이름" id="studentName" required></td>
+            </tr>
+            <tr>
+                <td><input type="submit" value="로그인" class="btn"></td> 
+            </tr>
+        </table>
+    </form>
+
+    <!-- 공지사항 섹션 -->
+    <section id="noticeSection">
+        <h3>공지사항</h3>
+        <div id="notices">
+            <p>현재 공지사항이 없습니다.</p>
+        </div>
+    </section>
+
+    <script src="login.js"></script>
+    <script>
+        function loadNotices() {
+            const notices = [
+                "베타 테스트",
+                "피드백 환영",
+                "로그인 기능 업데이트(Ver0.2)"
+            ];
+
+            const noticeDiv = document.getElementById("notices");
+            noticeDiv.innerHTML = "";
+
+            notices.forEach((notice, index) => {
+                const p = document.createElement("p");
+                p.textContent = `${index + 1}. ${notice}`;
+                noticeDiv.appendChild(p);
+            });
+        }
+
+        window.onload = function() {
+            loadNotices();
+            document.getElementById("loginForm").addEventListener("submit", handleLogin); // 이벤트 리스너 추가
+        };
+    </script>
+</body>
+</html>
