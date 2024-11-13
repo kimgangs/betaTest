@@ -1,0 +1,190 @@
+@font-face {
+    font-family: 'NeoDGM'; /* 폰트 이름을 정의 */
+    src: url('neodgm.ttf') format('truetype'); /* .ttf 폰트 파일 경로 및 형식 */
+    font-weight: normal;
+    font-style: normal;
+}
+
+body { 
+    font-family: 'NeoDGM', Arial, sans-serif; /* 폰트를 적용하고, 기본 대체 폰트 지정 */
+    background-image: url('background2.png');
+    background-repeat: no-repeat; /* 배경 이미지 반복 방지 */
+    background-attachment: fixed;
+    min-height: 100000px; /* 화면의 최소 100% 높이에 맞추기 */
+    width: 1900px;
+    margin: 0; /* 기본 마진 제거 */
+    padding: 0; /* 기본 패딩 제거 */
+}
+
+#payment-options {
+    position: absolute;
+    top: 100px;
+    left: 18%;
+    transform: translateX(-50%);
+    display: flex; /* Flexbox를 사용하여 버튼을 정렬 */
+    flex-wrap: wrap; /* 여러 줄로 정렬 가능하도록 설정 */
+    gap: 10px; /* 버튼 간격 설정 */
+    justify-content: center; /* 중앙 정렬 */
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ccc;
+    padding: 15px; /* 내부 여백 추가 */
+    border-radius: 8px;
+    z-index: 1000;
+}
+
+#popup-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    margin-top: 30%;
+}   
+
+.popup-row {
+    text-align: center;
+    margin: 10px 0;
+    margin-left: 9%;
+    margin-bottom: 5px;
+}
+
+#popup-chart {
+    position: fixed;
+    top: 30%;
+    left: 80%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    border: 2px solid #333;
+    padding: 20px;
+    z-index: 2000;
+}
+
+#popup-chart button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#payment-options button, #popup-container button {
+    font-family: 'NeoDGM', Arial, sans-serif;
+    width: 120px;
+    height: 35px;
+    padding: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+    vertical-align: middle;
+    margin: 0;
+}
+
+
+
+#game {  
+    margin: 0 auto; 
+    padding: 20px; 
+    border-radius: 10px; 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+}
+
+.container {
+    display: flex; 
+    justify-content: space-between; 
+    margin-bottom: 20px; 
+
+}
+
+.coin-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 두 개의 고정 열 */
+    grid-template-rows: auto auto auto; /* 세 개의 고정 행 */
+    grid-gap: 5px ; /* 각 아이템 간 간격 */
+    width: 2000px;
+    margin-top: 7%;
+    margin-left: 3%;
+}
+
+/* 각 이미지를 grid 아이템 위치에 고정 */
+.coin:nth-child(1) { grid-row: 1; grid-column: 1; } /* 딸기 */
+.coin:nth-child(2) { grid-row: 1; grid-column: 2; } /* 복숭아 */
+.coin:nth-child(3) { grid-row: 2; grid-column: 1; } /* 당근 */
+.coin:nth-child(4) { grid-row: 2; grid-column: 2; } /* 사과 */
+.coin:nth-child(5) { grid-row: 3; grid-column: 1; } /* 브로콜리 */
+.coin:nth-child(6) { grid-row: 3; grid-column: 2; } /* 가지 */
+설명
+
+.coin-row { 
+    display: flex; 
+    justify-content: space-around; 
+    width: 100%; 
+    margin-bottom: 0px; 
+
+}
+
+.coin {
+    display: flex; /* 이미지와 텍스트를 가로로 배치 */
+    align-items: center; /* 이미지와 텍스트 수직 정렬 */
+    padding: 5%;
+    border: none;
+    background: none;
+}
+
+
+.coin-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0px; 
+    margin-top: 15px;
+}
+
+button { 
+    font-family: 'NeoDGM', Arial, sans-serif;
+    margin-top: 5px;
+    width: auto;
+    height: 25px;
+}
+
+#priceChart {
+    width: 100%; 
+    height: 500px; 
+}
+
+.coin-content {
+    font-size: 18px;
+    color: #ffffff;
+    text-shadow: 
+    1px 1px 0 rgb(0, 0, 0), 
+    -1px 1px 0 rgb(0, 0, 0), 
+    1px -1px 0 rgb(0, 0, 0), 
+    -1px -1px 0 rgb(0, 0, 0); /* 테두리 효과 */
+    text-align: center;
+    margin-left: 5px;
+}
+
+#goal {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+#musicIcon {
+    position: absolute;  /* 절대 위치 지정 */
+    top: 60px;  /* 화면 상단에서 20px 아래 */
+    right: 20px;  /* 화면 오른쪽에서 20px 왼쪽 */
+}
+
+#game-info {
+    position: absolute;
+    top: 150px;  /* 화면 상단에서 10px 아래 */
+    left: 45%;
+    transform: translateX(-50%);
+    z-index: 10;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+}
