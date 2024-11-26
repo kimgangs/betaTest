@@ -15,18 +15,17 @@
     <img id="musicIcon" src="mute.png" alt="음악 켜기/끄기" onclick="toggleMusic()" class="image-button" width="50" height="50">
     
     <div id="game">
-        <p>현재 자본: <span id="balance">10000₩</span></p>
+        <p>현재 자본: <span id="balance">100000₩</span></p>
         
-        <button onclick="nextTurn(); logEvent('다음날버튼누름')">다음 날</button>
         <button onclick="togglePaymentOptions(); logEvent('과금하기버튼누름')">과금하기</button>
         
         <div id="payment-options" style="display: none;">
             <button id="gacha-button" onclick="drawGacha(); logEvent('뽑기버튼누름');">뽑기</button>
-            <button id="weather-button" onclick="purchaseWeatherInfo(); logEvent('기상청 정보 구매');">기상청 (-29,000₩)</button>
+            <button id="weather-button" onclick="purchaseWeatherInfo(); logEvent('신문 구독 구매');">신문 구독 (-29,000₩)</button>
             <button onclick="togglePaymentOptions(); logEvent('과금하기버튼취소누름');">취소</button>
         </div>
         <div id="game-info">
-            <p id="day-count">오늘은 0일차입니다!</p>
+            <p id="clock">현재 시간: 09:00</p>
         </div>
         <div class="container">
             <div class="coin-container" id="coins"><canvas id="priceChart" width="500" height="400"></canvas></div>
@@ -37,9 +36,6 @@
                 </div>
                 <div class="popup-row">
                     <button onclick="openPopup()">차트 보기</button>
-                </div>
-                <div class="popup-row">
-                    <p id="event-text">5일 차마다 새로운 이벤트가 발생합니다!</p>
                 </div>
                 <div class="popup-row">
                     <p id="weather" style="display: none;">내일의 날씨: </p>
