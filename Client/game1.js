@@ -1,5 +1,5 @@
 window.onload = function() {
-    alert("30일안에 최대한 많은 금액을 벌어 랭킹에 도전해보세요 !");
+    alert("제한시간(04:00 ~ 07:00) 안에 최대한 많은 금액을 벌어 랭킹에 도전해보세요 !");
 };
  // 이벤트 기록 함수
  function logEvent(eventType) {
@@ -30,7 +30,7 @@ window.onload = function() {
         console.error("네트워크 오류:", error);
      });
 }
-let balance = 100000; // 초기 자본 설정
+let balance = 1000000; // 초기 자본 설정
 let turnCount = 0; // 현재 턴 카운트 초기화
 let showWeather = false; // 내일의 날씨 표시 여부
 const weatherCost = 29000; // 기상청 비용
@@ -38,16 +38,13 @@ const gachaCost = 9000; // 뽑기 비용 설정
 
 // 농산물 초기 설정
 const coins = [
-    { name: '당근', price: Math.floor(Math.random() * 10000 + 3000), owned: 0, img: '당근.png' },
-    { name: '사과', price: Math.floor(Math.random() * 10000 + 3000), owned: 0, img: '사과.png' },
-    { name: '가지', price: Math.floor(Math.random() * 10000 + 6000), owned: 0, img: '가지.png' },
-    { name: '딸기', price: Math.floor(Math.random() * 10000 + 6000), owned: 0, img: '딸기.png' },
-    { name: '복숭아', price: Math.floor(Math.random() * 10000 + 9000), owned: 0, img: '복숭아.png' },
-    { name: '브로콜리', price: Math.floor(Math.random() * 10000 + 9000), owned: 0, img: '브로콜리.png' }
+    { name: '당근', price: Math.floor(Math.random() * 7001 + 3000), owned: 0, img: '당근.png' },
+    { name: '사과', price: Math.floor(Math.random() * 7001 + 3000), owned: 0, img: '사과.png' },
+    { name: '가지', price: Math.floor(Math.random() * 7001 + 3000), owned: 0, img: '가지.png' },
+    { name: '딸기', price: Math.floor(Math.random() * 7001 + 3000), owned: 0, img: '딸기.png' },
+    { name: '복숭아', price: Math.floor(Math.random() * 7001 + 3000), owned: 0, img: '복숭아.png' },
+    { name: '브로콜리', price: Math.floor(Math.random() * 7001 + 3000), owned: 0, img: '브로콜리.png' }
 ];
-
-const priceHistory = coins.map(() => []); // 가격 기록 배열
-const labels = []; // 차트 레이블 배열
 
 const ctx = document.getElementById('priceChart').getContext('2d');
 
@@ -60,7 +57,12 @@ const colorMap = {
     '브로콜리': '#228B22' // 녹색
 };
 
-// 차트 생성 시 options 부분에 추가
+let currentGameTime = { hours: 4, minutes: 0 }; // 게임 시작 시간
+
+const labels = []; // 시간 기준으로 레이블 배열
+const priceHistory = coins.map(() => []); // 가격 기록 배열
+
+// 차트 생성 시 시간 기준으로 설정
 const priceChart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -92,8 +94,8 @@ const priceChart = new Chart(ctx, {
                     color: '#666',
                     rotation: 270,
                     font: {
-                        size: 16, // 글씨 크기 설정
-                        weight: 'normal' // 글씨 두께 설정
+                        size: 16,
+                        weight: 'normal'
                     }
                 },
             },
@@ -103,11 +105,11 @@ const priceChart = new Chart(ctx, {
                 },
                 title: {
                     display: true,
-                    text: '일차',
+                    text: '시간',
                     color: '#666',
                     font: {
-                        size: 16, // 글씨 크기 설정
-                        weight: 'normal' // 글씨 두께 설정
+                        size: 16,
+                        weight: 'normal'
                     }
                 },
             },
@@ -121,8 +123,8 @@ const priceChart = new Chart(ctx, {
                 borderColor: '#fff',
                 borderWidth: 1,
                 font: {
-                    size: 16, // 글씨 크기 설정
-                    weight: 'normal' // 글씨 두께 설정
+                    size: 16,
+                    weight: 'normal'
                 }
             },
             legend: {
@@ -137,7 +139,7 @@ const priceChart = new Chart(ctx, {
             },
             title: {
                 display: true,
-                text: `목표: 30일 안에 최대한 많은 금액 만들기! `,
+                text: `목표: 최대한 많은 금액 만들기!`,
                 color: '#333',
                 font: {
                     size: 16,
@@ -164,38 +166,63 @@ const priceChart = new Chart(ctx, {
     }]
 });
 
+// 게임 시간 초기화 (09:00)
+const endGameTime = { hours: 7, minutes: 0 };
 
+// 시계 업데이트 함수
+function updateClock() {
+    // 게임 시간이 15:00을 넘어가면 종료
+    if (currentGameTime.hours >= endGameTime.hours && currentGameTime.minutes >= endGameTime.minutes) {
+        document.getElementById("message").textContent = "게임 종료! 15:00이 되었습니다.";
+        return;
+    }
+
+    // 게임 시간 1분 증가 (1초마다)
+    currentGameTime.minutes++;
+
+    // 60분이 되면 시간 추가
+    if (currentGameTime.minutes >= 60) {
+        currentGameTime.minutes = 0;
+        currentGameTime.hours++;
+    }
+
+    // 시간 표시 (09:00 형식으로)
+    const formattedTime = `${currentGameTime.hours.toString().padStart(2, '0')}:${currentGameTime.minutes.toString().padStart(2, '0')}`;
+    document.getElementById("clock").textContent = formattedTime;
+
+    checkEndGame();
+    
+}
+// 1초마다 시계 업데이트
+setInterval(updateClock, 1000);
+
+// 페이지 로드 시에도 시계 업데이트
+updateClock();
+    
 // 내일의 날씨를 저장할 변수
-let nextWeather = ''; 
+let newsEvents = ''; 
 
 // 초기 날씨 결정 함수
 function determineNextWeather() {
-    const weatherChance = Math.random();
-    if (weatherChance < 0.4) {
-        nextWeather = '맑음'; // 40%
-    } else if (weatherChance < 0.65) {
-        nextWeather = '흐림'; // 25%
-    } else if (weatherChance < 0.85) {
-        nextWeather = '눈비'; // 20%
-    } else {
-        nextWeather = '폭설'; // 15%
-    }
+    const newsEvents = [
+        '농산물 가격 상승! 대형 식당 체인, 대규모 구매 계약 체결',
+        '폭우로 인해 농산물 작황 부진... 가격 상승 예상',
+        '농산물, 건강 열풍으로 인기 상승! 소비자 관심 집중',
+        '농산물 대풍작! 생산량 급증으로 가격 하락세',
+        '농산물, 품질 논란 발생! 주요 유통업체 거래 중단',
+        '농산물 수출 호황! 해외 수요 폭발로 가격 상승',
+        '농산물 대풍작 소식! 생산량 급증으로 가격 하락세 지속',
+        '농산물 수입 확대! 국내 농산물 가격 경쟁 심화로 하락세'
+    ];
+
+    // 0 ~ 7 사이의 랜덤 인덱스 생성
+    const randomIndex = Math.floor(Math.random() * newsEvents.length);
+    newsEvent = newsEvents[randomIndex];
 }
 
 // 첫 날의 날씨를 결정하고 화면에 표시
 determineNextWeather();
 document.getElementById('weather').style.display = 'none';
-
-// 게임 종료 조건 수정
-function checkEndGame() {
-    if (turnCount >= 31) {
-        const playerName = prompt("플레이어 이름을 입력하세요:"); // 플레이어 이름 입력받기
-        alert("31일차에 도달했습니다. 게임이 종료됩니다.");
-
-        updateRanking(playerName, balance); // 랭킹 업데이트
-        resetGame();
-    }
-}
 
 // 자본을 업데이트하고 게임 종료를 확인하는 함수
 function updateBalance(amount) {
@@ -206,9 +233,9 @@ function updateBalance(amount) {
 
 // 게임을 초기화하는 함수
 function resetGame() {
-    balance = 100000;
-    turnCount = 0; // turnCount를 0으로 초기화
-    
+    balance = 1000000;
+    currentGameTime = { hours: 4, minutes: 0 };
+
     // 코인 가격 및 보유량 초기화
     coins.forEach((coin, index) => {
         coin.price = basePrices[index]; // 기준 가격으로 재설정
@@ -217,32 +244,31 @@ function resetGame() {
     });
 
     labels.length = 0; // 레이블 배열을 비우고
-    labels.push('0 일차'); // 0일차로 다시 설정
+    labels.push('4:0'); // 게임 시작 시간으로 설정
 
     // 차트 업데이트
     priceChart.data.labels = labels;
     priceChart.data.datasets.forEach((dataset, index) => {
         dataset.data = priceHistory[index];
     });
-    
+
     // 차트의 타이틀을 오늘이 0일차로 업데이트
-    priceChart.options.plugins.title.text = `오늘은 ${turnCount} 일차입니다`;
+    //priceChart.options.plugins.title.text = `현재시간 : ${formattedTime}`;
     priceChart.update(); // 차트를 업데이트하여 초기화된 데이터 적용
-    
+
     // 내일의 날씨 숨김
     showWeather = false;
     document.getElementById('weather').style.display = 'none';
 
     // 기상청 버튼을 다시 활성화
     const weatherButton = document.getElementById('weather-button');
-    weatherButton.disabled = false;
-    weatherButton.innerText = `기상청 (-${weatherCost.toLocaleString()}₩)`;
+    weatherButton.disabled = false;  // 버튼 활성화
+    weatherButton.innerText = `뉴스 구독 (-${weatherCost.toLocaleString()}₩)`;  // 버튼 텍스트 초기화
 
     updateUI(); // UI 업데이트
     determineNextWeather(); // 다음 날의 날씨 결정
-    document.getElementById('weather').innerText = `내일의 날씨: ${nextWeather}`;
+    document.getElementById('weather').innerText = `${newsEvents}`;
 }
-
 
 function updateUI() {
     // 현재 자본을 3자리마다 쉼표가 포함된 형식으로 표시
@@ -374,14 +400,14 @@ function purchaseWeatherInfo() {
         showWeather = true;
 
         document.getElementById('weather').style.display = 'block'; // 내일의 날씨 표시
-        document.getElementById('weather').innerText = `내일의 날씨: ${nextWeather}`;
+        document.getElementById('weather').innerText = `${newsEvents}`;
         
-        alert("기상청 서비스 구매 완료! 게임이 초기화될 때까지 내일의 날씨가 보입니다.");
+        alert("신문 구독 완료! 게임이 초기화될 때까지 신문의 문구가 보입니다.");
 
         // 기상청 버튼을 비활성화
         const weatherButton = document.getElementById('weather-button');
         weatherButton.disabled = true;
-        weatherButton.innerText = '구매완료';
+        weatherButton.innerText = '구독완료';
     } else {
         alert('자본이 부족합니다.');
     }
@@ -395,7 +421,7 @@ function initializePriceHistory() {
     coins.forEach((coin, index) => {
         priceHistory[index].push(coin.price); // 초기 가격을 0일차에 추가
     });
-    labels.push('0 일차'); // 0일차 레이블 추가
+    labels.push('4:0'); // 0일차 레이블 추가
 }
 
 // 초기화 함수 호출 및 UI 업데이트
@@ -417,128 +443,169 @@ function closePopup() {
     document.getElementById("popup-chart").style.display = "none";
 }
 
-// 이벤트 문구 업데이트 (5일 차마다)
-function updateEventText() {
-    const eventText = document.getElementById("event-text");
-    if (turnCount % 5 === 0 && turnCount > 0) {
-        eventText.innerText = `새로운 이벤트 발생! ${turnCount}일 차`;
-    } else {
-        eventText.innerText = "5일 차마다 새로운 이벤트가 발생합니다!";
+let priceIntervalId;
+let weatherIntervalId;
+
+function startGameLoop() {
+    // Clear any existing intervals
+    if (priceIntervalId) {
+        clearInterval(priceIntervalId);
     }
+    if (weatherIntervalId) {
+        clearInterval(weatherIntervalId);
+    }
+
+
+    // Run updatePrices every second (1000ms)
+    priceIntervalId = setInterval(updatePrices, 1000);
+
+    // Run updateWeather every 10 seconds (10000ms)
+    weatherIntervalId = setInterval(updateWeather, 30000);
+
 }
 
-// 뉴스 이벤트 종류와 가격 변동 영향
-const newsEvents = [
-    { name: '농산물 수요 감소', effect: (price) => price * (1 - Math.random() * 0.2), message: "일부 농산물 수요 감소! 가격 하락!" },
-    { name: '농산물 수요 증가', effect: (price) => price * (1 + Math.random() * 0.3), message: "일부 농산물 수요 증가! 가격 상승!" },
-    { name: '농산물 수출 제한', effect: (price) => price * (1 - Math.random() * 0.15), message: "수출 제한 조치로 가격 하락!" },
-    { name: '농산물 수입량 증가', effect: (price) => price * (1 - Math.random() * 0.25), message: "외국산 농산물 수입 증가로 가격 하락!" },
-    { name: '비료 가격 상승', effect: (price) => price * (1 + Math.random() * 0.1), message: "비료 가격 상승으로 인해 가격 상승!" },
-    { name: '농작물 병충해 피해 발생', effect: (price) => price * (1 - Math.random() * 0.1), message: "병충해 피해로 인한 가격 하락!" },
-    { name: '추석 농산물 판매량 증가', effect: (price) => price * (1 + Math.random() * 0.15), message: "추석으로 인한 농산물 판매량 증가!" },
-    { name: '농산물 수출량 증가', effect: (price) => price * (1 + Math.random() * 0.25), message: "국내산 농산물 수출 증가로 인한 공급 부족 가격 상승!" },
-];
-
-// 이벤트 문구를 화면에 표시하는 함수
-function showEventMessage(message) {
-    const eventText = document.getElementById("event-text");
-    eventText.innerText = message;
+function gameLoop() {
+    updatePrices();
+    updateWeather();
 }
 
-// 가격 변동에 뉴스 이벤트 반영
-function applyNewsEventEffect() {
-    const randomEvent = newsEvents[Math.floor(Math.random() * newsEvents.length)]; // 랜덤 뉴스 선택
-    showEventMessage(`${randomEvent.message}`);
-    
-    // 각 농산물의 가격에 뉴스 영향 적용
+// 게임 시작 시 루프 시작
+startGameLoop();
+
+
+function updateChart() {
+    // 가격 데이터와 레이블 갱신
+    labels.push(`${currentGameTime.hours}:${currentGameTime.minutes}`);
     coins.forEach((coin, index) => {
-        const newPrice = Math.round(randomEvent.effect(coin.price));
-        coin.price = Math.max((index <= 2) ? 500 : 9000, newPrice); // 최소 가격 제한 적용
         priceHistory[index].push(coin.price);
     });
 
-    updateUI(); // UI 업데이트
+    // 차트 데이터 설정
+    priceChart.data.labels = labels;
+    priceChart.data.datasets.forEach((dataset, index) => {
+        dataset.data = priceHistory[index];
+    });
+
+    // 차트 업데이트
+    priceChart.update();
 }
 
-// 날짜 문구를 업데이트하는 함수
-function updateDayCount() {
-    const dayCountElement = document.getElementById('day-count');
-    dayCountElement.innerText = `오늘은 ${turnCount} 일차입니다!`;
-}
-
-function nextTurn() {
-    turnCount++;
-    labels.push(`${turnCount} 일차`); 
+function updatePrices() {
+    labels.push(`${currentGameTime.hours}:${currentGameTime.minutes}`);
     
-    // 오늘 일차를 차트 제목에 반영
-    priceChart.options.plugins.title.text = `오늘은 ${turnCount} 일차입니다!`;
-
-    // 날짜 문구 업데이트
-    updateDayCount();
-
-    // 날씨 및 가격 업데이트 로직 실행
-    const weather = nextWeather;
-    determineNextWeather();
-
-    if (showWeather) {
-        document.getElementById('weather').style.display = 'block';
-        document.getElementById('weather').innerText = `내일의 날씨: ${nextWeather}`;
-    } else {
-        document.getElementById('weather').style.display = 'none';
-    }
-
-    // 뉴스 이벤트 처리
-    if (turnCount % 5 === 0) {
-        applyNewsEventEffect();
-    } else {
-        // 일반적인 가격 변동 적용
-        coins.forEach((coin, index) => {
-            let change;
+    // 가격 변동 및 가격 기록
+    coins.forEach((coin, index) => {
+        let change;
         
         // 각 코인마다 고유한 변동 폭 설정
         switch (index) {
-            case 0: change = (Math.random() * 0.8 - 0.35); break;
-            case 1: change = (Math.random() * 0.7 - 0.3); break;
-            case 2: change = (Math.random() * 0.6 - 0.25); break;
-            case 3: change = (Math.random() * 0.5 - 0.2); break;
-            case 4: change = (Math.random() * 0.4 - 0.15); break;
-            case 5: change = (Math.random() * 0.3 - 0.1); break;
+            case 0: change = (Math.random() * 0.2 - 0.1); break;
+            case 1: change = (Math.random() * 0.2 - 0.1); break;
+            case 2: change = (Math.random() * 0.2 - 0.1); break;
+            case 3: change = (Math.random() * 0.2 - 0.1); break;
+            case 4: change = (Math.random() * 0.2 - 0.1); break;
+            case 5: change = (Math.random() * 0.2 - 0.1); break;
         }
-        
+
         // 평균 회귀 로직 및 날씨 효과 적용
         const meanReversionProbability = 0.4; 
         if (coin.price < basePrices[index] && Math.random() < meanReversionProbability) {
             change += (basePrices[index] - coin.price) / basePrices[index] * 0.2;
         }
 
-        switch (weather) {
-            case '맑음': change -= 0.1; break;
-            case '흐림': change += (Math.random() * 0.1 - 0.05); break;
-            case '눈비': change += (Math.random() * 0.05 + 0.05); break;
-            case '폭설': change += (Math.random() * 0.05 + 0.15); break;
-        }
-
         const minPrice = (index <= 2) ? 500 : 9000; 
         coin.price = Math.max(minPrice, Math.round(coin.price * (1 + change)));
         priceHistory[index].push(coin.price);
     });
-    }
-    
-    priceChart.data.labels = labels;
+
+// 날씨에 따른 가격 변동 적용 함수
+function applyWeatherImpact() {
+    coins.forEach((coin, index) => {
+        let change = 0;
+
+        // 날씨 효과 적용
+        switch (newsEvent) {
+            case '농산물 가격 상승! 대형 식당 체인, 대규모 구매 계약 체결':
+                change += 0.30;
+                break;
+            case '폭우로 인해 농산물 작황 부진... 가격 상승 예상':
+                change += 0.05;
+                break;
+            case '농산물, 건강 열풍으로 인기 상승! 소비자 관심 집중':
+                change = Math.random() * 0.02 + 0.01; // 가격 1~3% 증가
+                break;
+            case '농산물 대풍작! 생산량 급증으로 가격 하락세':
+                change = Math.random() * -0.02 - 0.01;
+                break;
+            case '농산물, 품질 논란 발생! 주요 유통업체 거래 중단':
+                change = -0.30; // 무조건 30% 하락
+                break;
+            case '농산물 수출 호황! 해외 수요 폭발로 가격 상승설':
+                change = Math.random() * 0.02 + 0.03; // 가격 3~5% 증가
+                break;
+            case '농산물 대풍작 소식! 생산량 급증으로 가격 하락세 지속':
+                change = Math.random() * -0.01 - 0.02; // 가격 2~3% 하락
+                break;
+            case '농산물 수입 확대! 국내 농산물 가격 경쟁 심화로 하락세':
+                change -= 0.05;
+                break;
+        }
+
+        // 강제로 가격이 오르지 않도록 제한
+        if (newsEvent === '농산물, 품질 논란 발생! 주요 유통업체 거래 중단') {
+            change = Math.min(change, -0.01); // 무조건 음수로 강제
+        }
+
+        const minPrice = (index <= 2) ? 500 : 9000; // 최소 가격
+        coin.price = Math.max(minPrice, Math.round(coin.price * (1 + change))); // 변동된 가격 적용
+        priceHistory[index].push(coin.price); // 가격 기록 저장
+    });
+
+    updateChart(); // 차트 업데이트
+    updateUI(); // UI 업데이트
+}
+    // 차트 업데이트
     priceChart.update();
-    
-    // 팝업 차트가 열려 있는 경우, 팝업 차트도 업데이트
+
+    // 팝업 차트가 열려 있는 경우 팝업 차트도 업데이트
     if (document.getElementById("popup-chart").style.display === "block") {
         window.popupChart.data.labels = labels;
         window.popupChart.data.datasets.forEach((dataset, index) => {
             dataset.data = priceHistory[index];
         });
         window.popupChart.update();
+    };
+    updateUI(); // UI 업데이트
+    checkEndGame();
+}
+// 날씨 업데이트 함수 수정
+function updateWeather() {
+    const previousWeather = newsEvents; // 이전 날씨를 저장
+    determineNextWeather(); // 새로운 날씨 결정
+
+    if (showWeather) {
+        document.getElementById('weather').style.display = 'block';
+        document.getElementById('weather').innerText = `${newsEvent}`;
     }
 
-    updateUI();
-    checkEndGame(); 
+    // 날씨가 변경되었을 때만 가격 변동 적용
+    if (newsEvents !== previousWeather) {
+        applyWeatherImpact();
+    }
 }
+
+// 게임 시계 및 날짜 갱신
+function updateClock() {
+    currentGameTime.minutes++;
+    if (currentGameTime.minutes >= 60) {
+        currentGameTime.minutes = 0;
+        currentGameTime.hours++;
+    }
+
+    const formattedTime = `${currentGameTime.hours.toString().padStart(2, '0')}:${currentGameTime.minutes.toString().padStart(2, '0')}`;
+    document.getElementById('clock').textContent = `현재 시간: ${formattedTime}`;
+}
+
 
 // 랭킹 데이터 불러오기
 function loadRanking() {
@@ -575,7 +642,6 @@ function showRanking() {
 function closeRankingPopup() {
     document.getElementById('ranking-popup').style.display = 'none';
 }
-
 
 const RANKING_API_URL = "https://script.google.com/macros/s/AKfycbx9j0f_tbSPNleFg3PmnLaUap73kUv-OLTs8so920gWkyRrurN7QJh8DhYjCIhC0tt6/exec"; // Google Apps Script URL로 변경
 
@@ -622,9 +688,9 @@ async function showRanking() {
 
 // 게임 종료 시 랭킹 저장
 function checkEndGame() {
-    if (turnCount >= 31) {
+    if (currentGameTime.hours >= endGameTime.hours && currentGameTime.minutes >= endGameTime.minutes) {
         const playerName = prompt("플레이어 이름을 입력하세요:");
-        alert("30일차에 도달했습니다. 게임이 종료됩니다.");
+        alert("07:00에 도달했습니다. 게임이 종료됩니다.");
 
         saveRanking(playerName, balance); // 서버에 랭킹 저장
         resetGame();
